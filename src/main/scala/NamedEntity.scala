@@ -29,6 +29,30 @@ abstract class NamedEntity(val text: String) {
   def describe: String = s"[$entityType] $text"
 }
 
+class Person(text: String) extends NamedEntity(name) {
+  override def entityType: String = "Person"
+}
+
+class Organization(text: String) extends NamedEntity(name){
+  override def entityType: String = "Organization"
+}
+
+class University(text: String) extends Organization(name){
+  override def entityType: String = "University"
+}
+
+class Place(text: String) extends NamedEntity(name){
+  override def entityType: String = "Place"
+}
+
+class Technology(text: String) extends NamedEntity(name){
+  override def entityType: String = "Technology"
+}
+
+class ProgrammingLanguage(text: String) extends Technology(name){
+  override def entityType: String = "ProgrammingLanguage"
+}
+
 // =====================================================================
 // TODO (Ejercicio 1): Completar la jerarquía de entidades
 //
