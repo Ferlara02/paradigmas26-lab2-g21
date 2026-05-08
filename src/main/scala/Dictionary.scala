@@ -39,12 +39,13 @@ object Dictionary {
    */
   def loadFromFile(filePath: String, entityType: String): List[NamedEntity] = {
     val lineas = FileIO.readLines(filePath)  // Lee todo el archivo linea por linea y las pongo en una lista
-    lineas.map(name => entityType match{  // Usa map para transformar la lista en los casos que filtramos en match
-        case "Person"              => new Person(name) 
-        case "University"          => new University(name)
-        case "ProgrammingLanguage" => new ProgrammingLanguage(name)
-        case "Organization"        => new Organization(name)
-        case "Place"               => new Place(name)
+    lineas.flatMap(name => entityType match{  // Usa map para transformar la lista en los casos que filtramos en match
+        case "Person"              => Some(new Person(name))
+        case "University"          => Some(new University(name))
+        case "ProgrammingLanguage" => Some(new ProgrammingLanguage(name))
+        case "Organization"        => Some(new Organization(name))
+        case "Place"               => Some(new Place(name))
+        case _                     => None
     })
   }
 
