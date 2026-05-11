@@ -70,7 +70,7 @@ object Formatters {
 
     formattedEntities match {
       case "" => s"=== Estadísticas de entidades ===\n"
-      case _ => s"=== Estadísticas de entidades ===\n" + formattedEntities
+      case _ => s"=== Estadísticas de entidades ===\n" + formattedEntities + "\n"
     }
   }
 }
