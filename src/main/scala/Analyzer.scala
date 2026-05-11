@@ -15,27 +15,11 @@ object Analyzer {
    * @param dictionary lista de entidades conocidas (cargadas desde los diccionarios)
    * @return lista de entidades cuyo texto aparece en el texto analizado
    *
-   * TODO (Ejercicio 3): Implementar este método.
-   *
-   *   Para cada entidad en el diccionario, verificar si su texto aparece en el
-   *   texto del post. Retornar únicamente las entidades que aparecen.
-   *
-   *   Ejemplo:
-   *     text       = "Scala fue creado en EPFL por Martin Odersky"
-   *     dictionary = List(
-   *                    ProgrammingLanguage("Scala"),
-   *                    University("EPFL"),
-   *                    Person("Martin Odersky"),
-   *                    Person("Ada Lovelace")   ← no aparece en el texto
-   *                  )
-   *     resultado  = List(
-   *                    ProgrammingLanguage("Scala"),
-   *                    University("EPFL"),
-   *                    Person("Martin Odersky")
-   *                  )
-   */
+   * Ejercico 3:
+  */ 
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
-    ???
+    val lowerText = text.toLowerCase
+    dictionary.filter(entity => lowerText.contains(entity.text.toLowerCase))
   }
 
   /**
