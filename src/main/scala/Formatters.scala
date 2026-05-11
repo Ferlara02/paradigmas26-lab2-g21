@@ -31,7 +31,20 @@ object Formatters {
    *   Si no se detectaron entidades, mostrar un mensaje indicándolo.
    */
   def formatNERResult(postTitle: String, entities: List[NamedEntity]): String = {
-    ???
+    val sorted = entities.sortWith((a,b) => //orden por aparición en postTitle
+        postTitle.indexOf(a.text) < postTitle.indexOf(b.text)
+    )
+    val formattedEntities = sorted.map(e => "  "+ e.describe).mkString("\n")
+    val ansv1 = s"Post: \"$postTitle\"\n" +
+              s"Entidades detectadas:\n" +
+              s"$formattedEntities" + "\n"
+    
+    val ansv2 = s"Post: \"$postTitle\"\n" + s"  (sin entidades detectadas)\n"
+
+    sorted match {
+      case Nil => ansv2
+      case _ => ansv1 
+    }
   }
 
   /**
