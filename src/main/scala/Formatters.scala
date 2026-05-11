@@ -67,7 +67,10 @@ object Formatters {
     
     val sorted = counts.toList.sortBy{case (entityType, count) => (-count, entityType)}
     val formattedEntities = sorted.map{ case (entityType, count) => s"$entityType: $count"}.mkString("\n")
-    val ans = s"=== Estadísticas de entidades ===\n" + formattedEntities + ("\n")
-    ans
+
+    formattedEntities match {
+      case "" => s"=== Estadísticas de entidades ===\n"
+      case _ => s"=== Estadísticas de entidades ===\n" + formattedEntities
+    }
   }
 }
