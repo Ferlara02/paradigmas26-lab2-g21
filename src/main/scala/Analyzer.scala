@@ -6,6 +6,7 @@
  * Responsable de detectar entidades nombradas en texto libre y
  * producir estadísticas sobre ellas.
  */
+import scala.util.matching.Regex
 object Analyzer {
 
   /**
@@ -19,7 +20,10 @@ object Analyzer {
   */ 
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
     val lowerText = text.toLowerCase
-    dictionary.filter(entity => lowerText.contains(entity.text.toLowerCase))
+    dictionary.filter(entity => {
+      val pattern = s"\\b${Regex.quote(entity.text.toLowerCase)}\\b"
+      pattern.r.findFirstIn(lowerText).isDefined
+    }).distinctBy(entity => (entity.text, entity.entityType))
   }
 
   /**
