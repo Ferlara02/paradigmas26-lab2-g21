@@ -21,7 +21,8 @@ object Analyzer {
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
     val lowerText = text.toLowerCase
     dictionary.filter(entity => {
-      val pattern = s"\\b${Regex.quote(entity.text.toLowerCase)}\\b"
+      val escaped = Regex.quote(entity.text.toLowerCase)
+      val pattern = s"(?<![\\w])$escaped(?![\\w])"
       pattern.r.findFirstIn(lowerText).isDefined
     }).distinctBy(entity => (entity.text, entity.entityType))
   }
