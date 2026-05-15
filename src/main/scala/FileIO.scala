@@ -14,10 +14,13 @@ object FileIO {
 
   /** Retorna las URLs de los subreddits a analizar. */
   def readSubscriptions(): List[String] = {
-    List(
-      "https://www.reddit.com/r/scala/.json?count=10",
-      "https://www.reddit.com/r/learnprogramming/.json?count=10"
-    )
+    val source = Source.fromFile("subscriptions.json")
+    val content = source.mkString
+    source.close()
+    val parsed = parse(content)
+    (parsed \\ "url").children.collect {
+      case JString(url) => url
+    }
   }
 
   /** Descarga el contenido de una URL y lo retorna como String. */
