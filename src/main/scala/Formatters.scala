@@ -65,10 +65,10 @@ object Formatters {
 
     if (existeUniv) {
       val directaStr =
-        if (directa > 0) s"(Organization directa): $directa" else ""
+        if (directa > 0) s"\n  (Organization directa): $directa" else ""
       s"Organization: $orgCount\n" +
-        s"  University: $univCount\n" +
-        s"  $directaStr"
+      s"  University: $univCount" +
+      directaStr
     } else {
       s"Organization: $orgCount"
     }
@@ -115,8 +115,10 @@ object Formatters {
 
     // Suma valores, si no existian instancias de padre crea index key/value total del hijo
     val newCounts = merges.foldLeft(counts) { case (acc, (target, source)) =>
-      if (!acc.contains(target) && acc.getOrElse(source, 0) > 0)
-        acc + (target -> acc(source))
+    val sourceVal = acc.getOrElse(source, 0)
+    val targetVal = acc.getOrElse(target, 0)
+      if (sourceVal > 0)
+        acc + (target -> (targetVal + sourceVal))
       else
         acc
     }
