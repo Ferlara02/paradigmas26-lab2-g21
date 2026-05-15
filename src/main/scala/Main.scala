@@ -19,7 +19,7 @@ object Main {
 
     val allPosts: List[(String, List[String])] = subscriptions.map { url =>
       println(s"Descargando posts de: $url")
-      val json   = FileIO.downloadFeed(url)
+      val json = FileIO.downloadFeed(url)
       val titles = FileIO.extractPostTitles(json)
       (url, titles)
     }
@@ -27,12 +27,13 @@ object Main {
     // ------------------------------------------------------------------
     // Paso 3: Detectar entidades y mostrar resultados por post
     // ------------------------------------------------------------------
-    val detectedEntitiesByPost: List[NamedEntity] = allPosts.flatMap { case (_, titles) =>
-      titles.flatMap { title =>
-        val entities = Analyzer.detectEntities(title, dictionary)
-        println(Formatters.formatNERResult(title, entities))
-        entities
-      }
+    val detectedEntitiesByPost: List[NamedEntity] = allPosts.flatMap {
+      case (_, titles) =>
+        titles.flatMap { title =>
+          val entities = Analyzer.detectEntities(title, dictionary)
+          println(Formatters.formatNERResult(title, entities))
+          entities
+        }
     }
     // ------------------------------------------------------------------
     // Paso 4: Estadísticas globales
