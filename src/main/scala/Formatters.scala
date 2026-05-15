@@ -48,6 +48,49 @@ object Formatters {
     }
   }
 
+  def formatOrganization(counts: Map[String, Int]): String = {
+
+    // Filtro los contadores que quiero
+    val filtered = counts.filter { case (entityType, _) =>
+      entityType == "Organization" || entityType == "University"
+    }
+
+    val orgCount = counts.getOrElse("Organization", 0)
+    val univCount = counts.getOrElse("University", 0)
+    // Verifico si hay casos de no universidades
+    val directa = orgCount - univCount
+
+    // Verifico si existe caso de University
+    val existeUniv = filtered.contains("University")
+
+    if (existeUniv) {
+      val directaStr =
+        if (directa > 0) s"(Organization directa): $directa" else ""
+      s"Organization: $orgCount\n" +
+        s"  University: $univCount\n" +
+        s"  $directaStr"
+    } else {
+      s"Organization: $orgCount"
+    }
+  }
+
+  def formatTechnology(counts: Map[String, Int]): String = {
+    val filtered = counts.filter { case (entityType, _) =>
+      entityType == "Technology" || entityType == "ProgrammingLanguage"
+    }
+
+    // Verifico si existe caso de ProgrammingLanguage
+    val existePL = filtered.contains("ProgrammingLanguage")
+
+    val ans: String = existePL match {
+      case true =>
+        s"Technology: ${filtered.getOrElse("Technology", 0)} \n" +
+          s"  ProgrammingLanguage: ${filtered.getOrElse("ProgrammingLanguage", 0)}\n"
+      case false => s"Technology: ${filtered.get("Technology")}\n"
+    }
+    ans
+  }
+
   /** Formatea un resumen de estadísticas de entidades por tipo.
     *
     * @param counts
@@ -64,11 +107,32 @@ object Formatters {
     */
   def formatEntityStats(counts: Map[String, Int]): String = {
 
-    val sorted = counts.toList.sortBy { case (entityType, count) =>
-      (-count, entityType)
+    // Valores que se deben mergear
+    val merges = List(
+      ("Organization", "University"),
+      ("Technology", "ProgrammingLanguage")
+    )
+
+    // Suma valores, si no existian instancias de padre crea index key/value total del hijo
+    val newCounts = merges.foldLeft(counts) { case (acc, (target, source)) =>
+      if (!acc.contains(target) && acc.getOrElse(source, 0) > 0)
+        acc + (target -> acc(source))
+      else
+        acc
     }
-    val formattedEntities = sorted
-      .map { case (entityType, count) => s"$entityType: $count" }
+
+    // Me quedo solo con hijos de EntityName, los paso a lista y los ordeno
+    val filteredNewCounts = newCounts
+      .filter { case (k, v) => k != "University" && k != "ProgrammingLanguage" }
+      .toList
+      .sortBy { case (entityType, count) => (-count, entityType) }
+
+    val formattedEntities = filteredNewCounts
+      .map {
+        case ("Organization", _) => formatOrganization(newCounts)
+        case ("Technology", _)   => formatTechnology(newCounts)
+        case (entityType, count) => s"$entityType: $count"
+      }
       .mkString("\n")
 
     formattedEntities match {
